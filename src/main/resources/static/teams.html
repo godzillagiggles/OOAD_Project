@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teams</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        ul { list-style: none; padding: 0; }
+        li { padding: 8px; background: #f2f2f2; margin: 5px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+<h2>My Teams</h2>
+<ul id="teamList"></ul> <!-- ✅ Ensure this element exists -->
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", async function() {
+        const email = localStorage.getItem("userEmail");
+        if (!email) {
+            alert("No user logged in!");
+            window.location.href = "/login.html"; // ✅ Ensure absolute path
+            return;
+        }
+
+        try {
+            const response = await axios.get(`http://localhost:5460/teams/my-teams/${email}`);
+            const teams = response.data; // This should be a list of team names
+
+            const teamList = document.getElementById("teamList");
+            teamList.innerHTML = ""; // Clear previous content
+            teams.forEach(teamName => {
+                const li = document.createElement("li");
+                li.textContent = teamName;
+                teamList.appendChild(li);
+            });
+        } catch (error) {
+            alert("Failed to load teams: " + (error.response?.data || "Server error"));
+        }
+    });
+</script>
+
+</body>
+</html>
